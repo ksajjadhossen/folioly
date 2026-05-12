@@ -11,7 +11,7 @@ export default async function HomePage() {
   const websites = await getWebsites();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-white dark:bg-background">
       <Hero />
 
       <main className="pb-20">

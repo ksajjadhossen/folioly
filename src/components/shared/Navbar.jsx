@@ -1,23 +1,28 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { Sun, Moon, Search, Plus } from "lucide-react";
+import { Sun, Moon, Plus } from "lucide-react";
+import Link from "next/link";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  // Initialize theme based on localStorage or system preference
   useEffect(() => {
     setMounted(true);
     const isDark =
       localStorage.getItem("theme") === "dark" ||
       (!localStorage.getItem("theme") &&
         window.matchMedia("(prefers-color-scheme: dark)").matches);
+
     if (isDark) {
       setDarkMode(true);
       document.documentElement.classList.add("dark");
     }
   }, []);
 
+  // Handle manual theme switching
   const toggleTheme = () => {
     setDarkMode(!darkMode);
     if (!darkMode) {
@@ -29,46 +34,59 @@ const Navbar = () => {
     }
   };
 
+  // Prevent layout shift during theme hydration
   if (!mounted) return <div className="h-16" />;
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/70 backdrop-blur-md dark:border-gray-800/50 dark:bg-gray-950/70">
+    <nav className="sticky top-0 z-50 w-full border-b  bg-background/80 backdrop-blur-md transition-colors duration-500 dark:border-gray-800/50">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-gray-900 dark:bg-white transition-transform hover:rotate-3">
-            <span className="text-sm font-bold text-white dark:text-gray-950 italic">
-              F
-            </span>
+        {/* Brand Section */}
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="flex h-8 w-8 items-center justify-center rounded bg-foreground transition-transform duration-300 group-hover:rotate-6">
+            <span className="text-sm font-black text-background italic">F</span>
           </div>
-          <span className="text-sm font-bold tracking-tight text-gray-900 dark:text-white uppercase">
+          <span className="text-sm font-black tracking-tighter text-foreground uppercase">
             Folioly
           </span>
-        </div>
+        </Link>
 
-        {/* Center - Simple Links */}
-        <div className="hidden md:flex items-center gap-8 text-[13px] font-medium text-gray-500 dark:text-gray-400">
-          <a href="#" className="hover:text-gray-900 dark:hover:text-white">
+        {/* Navigation Links */}
+        <div className="hidden md:flex items-center gap-8 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+          <Link
+            href="/explore"
+            className="transition-colors hover:text-foreground"
+          >
             Explore
-          </a>
-          <a href="#" className="hover:text-gray-900 dark:hover:text-white">
+          </Link>
+          <Link
+            href="/categories"
+            className="transition-colors hover:text-foreground"
+          >
             Categories
-          </a>
-          <a href="#" className="hover:text-gray-900 dark:hover:text-white">
+          </Link>
+          <Link
+            href="/about"
+            className="transition-colors hover:text-foreground"
+          >
             About
-          </a>
+          </Link>
         </div>
 
-        {/* Actions */}
+        {/* Action Buttons */}
         <div className="flex items-center gap-3">
+          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-gray-900 transition-colors"
+            aria-label="Toggle Theme"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-foreground transition-all hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900"
           >
-            {darkMode ? <Sun size={14} /> : <Moon size={14} />}
+            {darkMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-          <button className="hidden sm:flex items-center gap-2 rounded-md bg-gray-900 px-4 py-1.5 text-[13px] font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-gray-950 dark:hover:bg-gray-100 transition-all">
-            <Plus size={14} /> Submit
+
+          {/* Call to Action */}
+          <button className="hidden sm:flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-[13px] font-bold text-background transition-all hover:opacity-90 active:scale-95">
+            <Plus size={16} />
+            <span>Submit Site</span>
           </button>
         </div>
       </div>

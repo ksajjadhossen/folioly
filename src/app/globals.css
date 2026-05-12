@@ -3,11 +3,13 @@
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
+  color-scheme: light;
 }
 
 .dark {
   --background: #030712;
   --foreground: #f8fafc;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -15,8 +17,16 @@
   --color-foreground: var(--foreground);
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  transition: background-color 0.3s ease;
+/* পুরো ওয়েবসাইটের ব্যাকগ্রাউন্ড ফিক্স */
+@layer base {
+  html,
+  body {
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+    min-height: 100vh;
+    margin: 0;
+  }
 }

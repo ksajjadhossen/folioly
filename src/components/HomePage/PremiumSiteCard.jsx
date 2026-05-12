@@ -1,22 +1,23 @@
-"use client"; // এটি অবশ্যই একদম উপরে থাকতে হবে
+"use client";
 
 import { ExternalLink, Sparkles } from "lucide-react";
 
 const PremiumSiteCard = ({ site }) => {
   if (!site) return null;
 
-  // ইমেজ লোড না হলে ডিফল্ট ছবি সেট করার ফাংশন
+  // Function to set default image if the main one fails to load
   const handleImageError = (e) => {
     e.target.src = "/placeholder.jpg";
   };
 
   return (
     <div className="relative h-full w-full group">
-      {/* ফ্যান্সি গ্লো ইফেক্ট */}
-      <div className="absolute -inset-0.5 rounded-[12px] bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-30 dark:group-hover:opacity-20" />
+      {/* Fancy Glow Effect - Subtle blue/purple glow on hover */}
+      <div className="absolute -inset-0.5 rounded-[12px] bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-20 dark:group-hover:opacity-10" />
 
-      <div className="relative z-10 flex h-full flex-col overflow-hidden rounded-[10px] border border-gray-100 bg-white shadow-sm transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-3 group-hover:border-indigo-100 dark:border-gray-800/60 dark:bg-gray-950">
-        {/* Clickable Overlay */}
+      {/* Main Card Container */}
+      <div className="relative z-10 flex h-full flex-col overflow-hidden rounded-[12px] border border-gray-200 bg-background transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-2 group-hover:border-indigo-500/30 dark:border-gray-800/60 dark:group-hover:border-indigo-400/20">
+        {/* Clickable Overlay for the whole card */}
         <a
           href={site.url}
           target="_blank"
@@ -25,38 +26,43 @@ const PremiumSiteCard = ({ site }) => {
         />
 
         {/* Image Section */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 dark:bg-gray-900">
+        <div className="relative aspect-[16/10] overflow-hidden border-b border-gray-100 dark:border-gray-800/50">
+          {/* Featured Badge - Styled to match the black/white badges in your screenshot */}
           {site.featured && (
-            <div className="absolute left-3 top-3 z-30 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-gray-900 backdrop-blur-md dark:bg-gray-900/90 dark:text-white">
-              <Sparkles size={10} className="text-amber-500" />
+            <div className="absolute left-3 top-3 z-30 flex items-center gap-1.5 rounded-md bg-gray-900 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-sm dark:bg-white dark:text-gray-900">
+              <Sparkles
+                size={10}
+                className="text-amber-400 dark:text-amber-500"
+              />
               Featured
             </div>
           )}
           <img
             src={site.image || "/placeholder.jpg"}
             alt={site.title}
-            className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-110"
-            onError={handleImageError} // এখন এটি কাজ করবে কারণ আমরা 'use client' ব্যবহার করেছি
+            className="h-full w-full object-cover object-top transition-transform duration-1000 ease-out group-hover:scale-105"
+            onError={handleImageError}
           />
         </div>
 
         {/* Content Section */}
         <div className="flex flex-grow flex-col p-5">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-[15px] font-bold tracking-tight text-gray-900 dark:text-white">
+          <div className="flex items-start justify-between gap-4">
+            <h3 className="text-[16px] font-bold tracking-tight text-foreground line-clamp-1">
               {site.title}
             </h3>
-            <div className="relative z-30 flex items-center gap-3">
-              {/* GitHub SVG Icon */}
+
+            {/* Social/Link Icons - Positioned at the top right of the content area */}
+            <div className="relative z-30 flex items-center gap-2.5">
               <a
                 href={site.githubUrl}
                 target="_blank"
-                className="text-gray-400 transition-colors hover:text-indigo-500"
+                className="text-gray-400 transition-colors hover:text-indigo-500 dark:hover:text-indigo-400"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -71,28 +77,30 @@ const PremiumSiteCard = ({ site }) => {
               <a
                 href={site.url}
                 target="_blank"
-                className="text-gray-400 transition-colors hover:text-indigo-500"
+                className="text-gray-400 transition-colors hover:text-indigo-500 dark:hover:text-indigo-400"
               >
-                <ExternalLink size={16} />
+                <ExternalLink size={18} />
               </a>
             </div>
           </div>
 
-          <p className="mt-2 flex-grow text-[12px] leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">
+          <p className="mt-2 flex-grow text-[13px] leading-relaxed text-muted-foreground line-clamp-2">
             {site.description}
           </p>
 
-          {/* Tags */}
-          <div className="mt-5 flex flex-wrap gap-1.5 pt-4 border-t border-gray-50 dark:border-gray-800/50">
-            {site.tags?.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-md bg-gray-50 px-2 py-0.5 text-[10px] font-medium text-gray-400 dark:bg-gray-900 dark:text-gray-500"
-              >
-                {tag.replace("#", "")}
-              </span>
-            ))}
-          </div>
+          {/* Tags Section - Hidden or simplified if you want the exact clean look from the screenshot */}
+          {site.tags && site.tags.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-1.5 pt-4 border-t border-gray-50 dark:border-gray-800/40">
+              {site.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-md bg-secondary/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                >
+                  {tag.replace("#", "")}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
