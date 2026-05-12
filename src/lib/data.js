@@ -17,3 +17,19 @@ export async function getWebsites() {
     return [];
   }
 }
+
+export async function getCategories() {
+  const websites = await getWebsites();
+  const categoryCounts = {};
+
+  websites.forEach((site) => {
+    site.tags?.forEach((tag) => {
+      categoryCounts[tag] = (categoryCounts[tag] || 0) + 1;
+    });
+  });
+
+  return Object.keys(categoryCounts).map((name) => ({
+    name,
+    count: categoryCounts[name],
+  }));
+}
