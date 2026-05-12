@@ -1,3 +1,6 @@
+// src/lib/data.js
+"use server"; // এই লাইনটি অবশ্যই যোগ করতে হবে
+
 import fs from "fs/promises";
 import path from "path";
 
