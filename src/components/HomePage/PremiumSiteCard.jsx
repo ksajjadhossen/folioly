@@ -1,23 +1,73 @@
 "use client";
 
-import { ExternalLink, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ExternalLink, Sparkles, Bookmark } from "lucide-react";
+import { toast } from "react-toastify";
 
 const PremiumSiteCard = ({ site }) => {
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  // মাউন্ট হওয়ার সময় চেক করা এই সাইটটি বুকমার্ক করা আছে কিনা
+  useEffect(() => {
+    if (!site?._id) return;
+
+    try {
+      const savedBookmarks =
+        JSON.parse(localStorage.getItem("bookmarks")) || [];
+      // Optional chaining (?.) এবং validity check যোগ করা হয়েছে এরর এড়াতে
+      const exist = savedBookmarks.some((fav) => fav && fav._id === site._id);
+      setIsBookmarked(exist);
+    } catch (error) {
+      console.error("Error reading bookmarks from localStorage", error);
+    }
+  }, [site?._id]);
+
   if (!site) return null;
 
-  // Function to set default image if the main one fails to load
+  // বুকমার্ক টগল ফাংশন
+  const handleBookmark = (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // কার্ডের মেইন লিঙ্ক যেন ট্রিগার না হয়
+
+    try {
+      const savedBookmarks =
+        JSON.parse(localStorage.getItem("bookmarks")) || [];
+
+      // ডাটাবেস বা লোকাল স্টোরেজ থেকে আসা নাল ভ্যালু ফিল্টার আউট করা
+      const cleanBookmarks = savedBookmarks.filter((item) => item && item._id);
+
+      let updatedBookmarks;
+
+      if (isBookmarked) {
+        updatedBookmarks = cleanBookmarks.filter((fav) => fav._id !== site._id);
+        toast.info("Removed from bookmarks");
+      } else {
+        updatedBookmarks = [...cleanBookmarks, site];
+        toast.success("Added to bookmarks!");
+      }
+
+      localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+      setIsBookmarked(!isBookmarked);
+
+      // লোকাল স্টোরেজ আপডেট ইভেন্ট ডিসপ্যাচ করা (অন্য কম্পোনেন্ট লিসেন করার জন্য)
+      window.dispatchEvent(new Event("storage_updated"));
+    } catch (error) {
+      toast.error("Could not save bookmark");
+    }
+  };
+
   const handleImageError = (e) => {
     e.target.src = "/placeholder.jpg";
   };
 
   return (
     <div className="relative h-full w-full group">
-      {/* Fancy Glow Effect - Subtle blue/purple glow on hover */}
+      {/* Fancy Glow Effect */}
       <div className="absolute -inset-0.5 rounded-[12px] bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-20 dark:group-hover:opacity-10" />
 
       {/* Main Card Container */}
       <div className="relative z-10 flex h-full flex-col overflow-hidden rounded-[12px] border border-gray-200 bg-background transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-2 group-hover:border-indigo-500/30 dark:border-gray-800/60 dark:group-hover:border-indigo-400/20">
-        {/* Clickable Overlay for the whole card */}
+        {/* Clickable Overlay */}
         <a
           href={site.url}
           target="_blank"
@@ -27,7 +77,6 @@ const PremiumSiteCard = ({ site }) => {
 
         {/* Image Section */}
         <div className="relative aspect-[16/10] overflow-hidden border-b border-gray-100 dark:border-gray-800/50">
-          {/* Featured Badge - Styled to match the black/white badges in your screenshot */}
           {site.featured && (
             <div className="absolute left-3 top-3 z-30 flex items-center gap-1.5 rounded-md bg-gray-900 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-sm dark:bg-white dark:text-gray-900">
               <Sparkles
@@ -52,12 +101,29 @@ const PremiumSiteCard = ({ site }) => {
               {site.title}
             </h3>
 
-            {/* Social/Link Icons - Positioned at the top right of the content area */}
+            {/* Icons Area */}
             <div className="relative z-30 flex items-center gap-2.5">
+              {/* Bookmark Button */}
+              <button
+                onClick={handleBookmark}
+                className={`transition-colors duration-300 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                  isBookmarked
+                    ? "text-indigo-500"
+                    : "text-gray-400 hover:text-indigo-500"
+                }`}
+                title={isBookmarked ? "Remove Bookmark" : "Bookmark this site"}
+              >
+                <Bookmark
+                  size={18}
+                  fill={isBookmarked ? "currentColor" : "none"}
+                />
+              </button>
+
               <a
                 href={site.githubUrl}
                 target="_blank"
-                className="text-gray-400 transition-colors hover:text-indigo-500 dark:hover:text-indigo-400"
+                rel="noopener noreferrer"
+                className="text-gray-400 transition-colors hover:text-indigo-500 dark:hover:text-indigo-400 p-1"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +143,8 @@ const PremiumSiteCard = ({ site }) => {
               <a
                 href={site.url}
                 target="_blank"
-                className="text-gray-400 transition-colors hover:text-indigo-500 dark:hover:text-indigo-400"
+                rel="noopener noreferrer"
+                className="text-gray-400 transition-colors hover:text-indigo-500 dark:hover:text-indigo-400 p-1"
               >
                 <ExternalLink size={18} />
               </a>
@@ -88,7 +155,6 @@ const PremiumSiteCard = ({ site }) => {
             {site.description}
           </p>
 
-          {/* Tags Section - Hidden or simplified if you want the exact clean look from the screenshot */}
           {site.tags && site.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-1.5 pt-4 border-t border-gray-50 dark:border-gray-800/40">
               {site.tags.slice(0, 3).map((tag) => (
