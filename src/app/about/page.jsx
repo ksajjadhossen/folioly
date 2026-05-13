@@ -147,9 +147,14 @@ const AboutPage = () => {
           <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-8">
             Ready to show the world <br /> your digital home?
           </h2>
-          <button className="rounded-full bg-background text-foreground px-10 py-4 text-sm font-bold uppercase tracking-widest hover:scale-105 transition-transform active:scale-95">
-            Submit Your Portfolio
-          </button>
+          <a
+            href="mailto:ksajjadhossen07@gmail.com?subject=Portfolio Submission - Folioly"
+            className="inline-block"
+          >
+            <button className="rounded-full bg-background text-foreground px-10 py-4 text-sm font-bold uppercase tracking-widest hover:scale-105 transition-transform active:scale-95">
+              Submit Your Portfolio
+            </button>
+          </a>
         </div>
       </section>
     </div>

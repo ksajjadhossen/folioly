@@ -82,12 +82,6 @@ const Navbar = () => {
           >
             {darkMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-
-          {/* Call to Action */}
-          <button className="hidden sm:flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-[13px] font-bold text-background transition-all hover:opacity-90 active:scale-95">
-            <Plus size={16} />
-            <span>Submit Site</span>
-          </button>
         </div>
       </div>
     </nav>
